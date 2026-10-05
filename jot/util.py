@@ -77,7 +77,7 @@ def add_caller_tags(tags):
     while frame:
         fpath = frame.f_globals.get("__file__")
         if fpath is None:
-            continue
+            break
         fdir = os.path.basename(os.path.dirname(fpath))
         if fdir != pdir:
             break

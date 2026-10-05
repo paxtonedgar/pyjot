@@ -1,3 +1,5 @@
+import threading
+
 from jot.util import (
     add_caller_tags,
     hex_decode_bytes,
@@ -13,7 +15,21 @@ def test_add_caller_tags():
 
     inner(tags)
     assert tags["file"] == __file__
-    assert tags["line"] == 12
+    assert tags["line"] == 14
+    assert tags["function"] == "inner"
+
+
+def test_add_caller_tags_without_file():
+    # exec'd code (notebooks, python -c) has no __file__ in its globals
+    tags = {}
+    code = "def inner():\n    add_caller_tags(tags)\ninner()"
+    globals = {"add_caller_tags": add_caller_tags, "tags": tags}
+    thread = threading.Thread(target=exec, args=(code, globals), daemon=True)
+    thread.start()
+    thread.join(timeout=5)
+    assert not thread.is_alive()
+    assert tags["file"] is None
+    assert tags["line"] == 2
     assert tags["function"] == "inner"
 
 
