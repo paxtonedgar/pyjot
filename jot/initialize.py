@@ -6,6 +6,7 @@ import sys
 from . import facade, flush
 from .base import Meter, Target
 from .fanout import FanOutTarget
+from .sampling import SamplingTarget
 from .util import get_all_subclasses, get_env
 
 TAG_PREFIX = "JOT_TAG_"
@@ -25,6 +26,11 @@ def autoinit():
 def init_from_environment():
     _import_modules_from_environment()
     target = _get_target_from_environment()
+    if rate := get_env("TRACE_SAMPLE_RATE"):
+        try:
+            target = SamplingTarget(target, float(rate))
+        except ValueError as e:
+            raise ValueError(f"Invalid TRACE_SAMPLE_RATE {rate!r}: {e}") from e
     tags = _get_tags_from_environment()
     init(target, **tags)
 

@@ -296,6 +296,23 @@ target = FanOutTarget(
 jot.init(target)
 ```
 
+### `SamplingTarget`
+
+Forwards a fraction of traces to another target. The decision is made from the trace id, using the same rule as OpenTelemetry's `TraceIdRatioBased` sampler, so every span in a trace is kept or dropped together. Logs, errors, events and metrics are always forwarded.
+
+**Constructor:** `SamplingTarget(target, ratio)`
+
+**Environment:** `init_from_environment()` wraps its target when `JOT_TRACE_SAMPLE_RATE` is set.
+
+**Example:**
+```python
+from jot.otlp import OTLPTarget
+from jot.sampling import SamplingTarget
+
+target = SamplingTarget(OTLPTarget.default(), 0.1)
+jot.init(target)
+```
+
 ### `LoggerTarget`
 
 Bridges to Python's logging system.

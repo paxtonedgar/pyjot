@@ -49,6 +49,15 @@ Send telemetry to different destinations:
 - **OTLPTarget** - OpenTelemetry for production observability
 - **SentryTarget** - Error tracking and performance monitoring
 - **FanOutTarget** - Send to multiple targets simultaneously
+- **SamplingTarget** - Export only a fraction of traces; logs, errors and metrics are unaffected
+
+```python
+from jot.otlp import OTLPTarget
+from jot.sampling import SamplingTarget
+jot.init(SamplingTarget(OTLPTarget.default(), 0.1))  # keep 10% of traces
+```
+
+The same wrapper is applied from the environment with `JOT_TRACE_SAMPLE_RATE=0.1`.
 
 ## Installation
 

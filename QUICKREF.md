@@ -96,6 +96,16 @@ target = FanOutTarget(
 jot.init(target)
 ```
 
+## Trace Sampling
+
+```python
+from jot.sampling import SamplingTarget
+
+# export 10% of traces; logs, errors and metrics are always sent
+jot.init(SamplingTarget(OTLPTarget.default(), 0.1))
+# or from the environment: JOT_TRACE_SAMPLE_RATE=0.1
+```
+
 ## Python Logging Bridge
 
 ```python
